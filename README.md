@@ -10,7 +10,7 @@ git commit -m "Description of changes made"
 Push Changes: Push the committed changes to the remote repository:
 
 git push origin main
-
+---------------------------- POSTMAN COMMANDS-----------------------------------------
 Register Players: Send a POST request to http://localhost:2000/api/register with JSON data in the request body containing the player's name. For example:
 
 json
