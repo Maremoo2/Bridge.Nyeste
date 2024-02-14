@@ -1,3 +1,7 @@
+For å snakke med client:
+npm install express @types/express
+-------------------------------------------------------
+GitHUB commands
 Here's a recap of the steps they should follow after making changes:
 Make Changes: Modify the files as needed.
 Stage Changes: Stage the modified files to be included in the next commit:
@@ -42,3 +46,5 @@ Copy code
 This will make a bid of "Pass" for the player in the North position.
 
 Deal Cards: Send a GET request to http://localhost:2000/api/deal to deal a hand of cards from the deck.
+GET http://localhost:2000/api/north-hand
+
