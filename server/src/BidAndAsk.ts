@@ -20,7 +20,7 @@ export class BidAndAsk {
     makeBid(position: Position, bid: string): boolean {
         // Validate the bid
         if (!this.isValidBid(position, bid)) {
-            console.log('Invalid bid:', bid);
+            console.log('Hva mener du?:', bid);
             return false;
         }
 
