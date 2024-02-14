@@ -17,8 +17,8 @@ export default class Deck {
 
     private initialize(): void {
         const suits = ['♥', '♠', '♦', '♣'];
-        const names = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'];
-        const values = [14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+        const names = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King','Ace'];
+        const values = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,14];
 
         // Create the deck of cards
         for (let i = 0; i < suits.length; i++) {
