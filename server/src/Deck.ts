@@ -37,6 +37,9 @@ export default class Deck {
     }
 
     deal(): Card[] {
+        // Shuffle the deck before dealing
+        this.shuffle();
+    
         // Deal logic here
         const hand: Card[] = [];
         for (let i = 0; i < 13; i++) {
@@ -44,4 +47,5 @@ export default class Deck {
         }
         return hand;
     }
+    
 }

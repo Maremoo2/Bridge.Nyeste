@@ -1,0 +1,91 @@
+*, *::after, *::before {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: .5rem;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.diamond-container {
+  grid-column: span 3;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: .5rem;
+  transform: rotate(0deg);
+  position: relative; /* Ensure the container is positioned relative */
+}
+
+#dealBtn {
+  position: absolute;
+  top: 50%; /* Position vertically at 50% */
+  left: 50%; /* Position horizontally at 50% */
+  transform: translate(-50%, -50%); /* Center the button */
+}
+
+.deck {
+  height: 100%;
+  width: 100%;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  border-radius: .5rem;
+  color: white;
+  user-select: none;
+  position: relative;
+}
+
+.North-deck, .South-deck, .East-deck, .West-deck {
+  background-color: transparent;
+}
+
+.North-deck {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.South-deck {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.West-deck {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.East-deck {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.username, .card-count {
+  margin: 0.5rem;
+}
+
+/* Add your color styles and other customizations as needed */
+.North-deck {
+  background-color: green;
+}
+
+.South-deck {
+  background-color: blue;
+}
+
+.West-deck {
+  background-color: blueviolet;
+}
+
+.East-deck {
+  background-color: darkgoldenrod;
+}
