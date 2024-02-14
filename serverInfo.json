@@ -1,0 +1,16 @@
+{
+    "hostname": "Bridge.com",
+    "port": 2000,
+    "database": {
+      "host": "localhost",
+      "port": 27017,
+      "username": "admin",
+      "password": "password123",
+      "name": "mydatabase"
+    },
+    "apiKeys": {
+      "weather": "YOUR_WEATHER_API_KEY",
+      "maps": "YOUR_MAPS_API_KEY"
+    }
+  }
+  
