@@ -80,30 +80,51 @@ app.post('/api/bid', (req: Request, res: Response) => {
 const deck = new Deck(); // Create an instance of Deck
 
 let northHand: Card[], eastHand: Card[], southHand: Card[], westHand: Card[]; // Define hands globally
+let cardsDealt = false; // Variable to track whether cards have been dealt
 
 app.get('/api/deal', (req: Request, res: Response) => {
-  // deal cards to each player
+  if (cardsDealt) {
+    return res.status(400).json({ success: false, message: 'Cards are already dealt' });
+  }
+
+  // Deal cards to each player
   northHand = deck.deal();
   eastHand = deck.deal();
   southHand = deck.deal();
   westHand = deck.deal();
 
-  // Return the hands of all players
+  cardsDealt = true; // Update the variable to indicate that cards have been dealt
+
+  // Calculate the count of cards in each hand
+  const northHandCount = northHand.length;
+  const eastHandCount = eastHand.length;
+  const southHandCount = southHand.length;
+  const westHandCount = westHand.length;
+
+  // Return the hands of all players along with the card count
   return res.json({
     success: true,
+    message: 'Cards have been dealt',
     hands: {
       north: northHand,
       east: eastHand,
       south: southHand,
       west: westHand
+    },
+    counts: {
+      north: northHandCount,
+      east: eastHandCount,
+      south: southHandCount,
+      west: westHandCount
     }
   });
 });
 
+
 // Endpoint to view North's hand
 app.get('/api/north-hand', (req: Request, res: Response) => {
-  if (!northHand) {
-    return res.status(400).json({ success: false, error: 'North hand has not been dealt yet' });
+  if (!cardsDealt) {
+    return res.status(400).json({ success: false, error: 'Cards have not been dealt yet' });
   }
   res.json({
     success: true,
@@ -113,8 +134,8 @@ app.get('/api/north-hand', (req: Request, res: Response) => {
 
 // Endpoint to view East's hand
 app.get('/api/east-hand', (req: Request, res: Response) => {
-  if (!eastHand) {
-    return res.status(400).json({ success: false, error: 'East hand has not been dealt yet' });
+  if (!cardsDealt) {
+    return res.status(400).json({ success: false, error: 'Cards have not been dealt yet' });
   }
   res.json({
     success: true,
@@ -124,8 +145,8 @@ app.get('/api/east-hand', (req: Request, res: Response) => {
 
 // Endpoint to view South's hand
 app.get('/api/south-hand', (req: Request, res: Response) => {
-  if (!southHand) {
-    return res.status(400).json({ success: false, error: 'South hand has not been dealt yet' });
+  if (!cardsDealt) {
+    return res.status(400).json({ success: false, error: 'Cards have not been dealt yet' });
   }
   res.json({
     success: true,
@@ -135,14 +156,15 @@ app.get('/api/south-hand', (req: Request, res: Response) => {
 
 // Endpoint to view West's hand
 app.get('/api/west-hand', (req: Request, res: Response) => {
-  if (!westHand) {
-    return res.status(400).json({ success: false, error: 'West hand has not been dealt yet' });
+  if (!cardsDealt) {
+    return res.status(400).json({ success: false, error: 'Cards have not been dealt yet' });
   }
   res.json({
     success: true,
     hand: westHand
   });
 });
+
 
 // Create an HTTP server and attach the Express app
 const server = http.createServer(app);

@@ -43,6 +43,8 @@ body {
   color: white;
   user-select: none;
   position: relative;
+  user-select: none; /* Standard syntax */
+  -webkit-user-select: none; /* Safari and Safari on iOS */
 }
 
 .North-deck, .South-deck, .East-deck, .West-deck {
