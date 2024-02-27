@@ -9,7 +9,7 @@ const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const http_1 = __importDefault(require("http"));
 const Players_1 = require("./Players");
-const Deck_1 = __importDefault(require("./Deck")); // Importer Card fra Deck
+const Deck_1 = __importDefault(require("./Deck")); // Importer kort fra Deck
 const BidAndAsk_1 = require("./BidAndAsk");
 const app = (0, express_1.default)();
 const port = 2000;
@@ -67,6 +67,11 @@ app.post('/api/bud', (req, res) => {
     else {
         return res.status(400).json({ success: false, error: 'Feilet i å gjøre bud' });
     }
+});
+// Endpoint for getting the bid history
+app.get('/api/budhistorikk', (req, res) => {
+    const budhistorikk = budOgSpørsmål.getBudhistorikk();
+    res.json(budhistorikk);
 });
 // Kortstokk
 const kortstokk = new Deck_1.default(); // Opprett en instans av Deck

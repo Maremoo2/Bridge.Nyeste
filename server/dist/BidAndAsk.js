@@ -14,15 +14,48 @@ class BudOgSpørsmål {
     constructor() {
         this.spillere = {};
         this.turRekkefølge = [Players_1.Posisjon.Nord, Players_1.Posisjon.Øst, Players_1.Posisjon.Sør, Players_1.Posisjon.Vest];
+        this.nesteBudgiverIndex = 0; // Start med Nord
+        this.passCounter = 0;
+        this.budhistorikk = [];
+        this.spilletHarStartet = false;
+        this.høyesteBud = null;
     }
     gjørBud(posisjon, bud) {
+        // Sjekk om spillet har startet, og hvis det har det, returner false
+        if (this.spilletHarStartet) {
+            console.log('Spillet har allerede startet. Du kan ikke gjøre flere bud.');
+            return false;
+        }
         // Valider budet
         if (!this.erGyldigBud(posisjon, bud)) {
-            console.log('Hva mener du?:', bud);
+            console.log('Ugyldig bud!:', bud);
+            return false;
+        }
+        // Sjekk om den gitte posisjonen er den som skal by
+        if (posisjon !== this.turRekkefølge[this.nesteBudgiverIndex]) {
+            console.log('Det er ikke din tur til å by');
             return false;
         }
         // Legg til budet i budhistorikken
-        this.spillere[posisjon] = { posisjon, bud };
+        this.budhistorikk.push({ posisjon, bud: Budtype[bud] });
+        // Check if the new bid is higher
+        if (this.erHøyereBud(Budtype[bud])) {
+            this.høyesteBud = { posisjon, bud: Budtype[bud] };
+        }
+        // Øk telleren hvis det er et Pass-bud
+        if (bud === Budtype.Pass) {
+            this.passCounter++;
+            // Sjekk om tre Pass-bud er gitt på rad
+            if (this.passCounter >= 3) {
+                this.startSpillet();
+            }
+        }
+        else {
+            // Tilbakestill telleren hvis det ikke er et Pass-bud
+            this.passCounter = 0;
+        }
+        // Oppdater index for neste budgiver
+        this.nesteBudgiverIndex = (this.nesteBudgiverIndex + 1) % this.turRekkefølge.length;
         // Behandle spesielle bud
         switch (this.getKontraktstype(bud)) {
             case Budtype.Pass:
@@ -41,6 +74,11 @@ class BudOgSpørsmål {
         // Send oppdatert budinformasjon til spillere
         this.sendBudOppdatering();
         return true;
+    }
+    startSpillet() {
+        // Legg til logikk for å starte spillet her
+        console.log('Spillet starter nå!');
+        this.spilletHarStartet = true;
     }
     sendMelding(posisjon, melding) {
         // Implementer logikk for å sende en melding
@@ -86,10 +124,8 @@ class BudOgSpørsmål {
     }
     sisteBud() {
         // Hent det siste budet som ble gjort av en hvilken som helst spiller
-        const nøkler = Object.keys(this.spillere);
-        if (nøkler.length > 0) {
-            const sisteNøkkel = nøkler[nøkler.length - 1];
-            return this.spillere[sisteNøkkel];
+        if (this.budhistorikk.length > 0) {
+            return this.budhistorikk[this.budhistorikk.length - 1];
         }
         return undefined;
     }
@@ -104,6 +140,26 @@ class BudOgSpørsmål {
         // Send oppdatert budinformasjon til spillere
         // Denne metoden kan varsle spillere om den nåværende budstatusen
         // og eventuelle nye bud gjort av motstanderne
+    }
+    erHøyereBud(bud) {
+        // Implementer logikk for å sammenligne bud og avgjøre om det nye budet er høyere enn det høyeste budet
+        if (!this.høyesteBud) {
+            return true; // Hvis det ikke er noe høyeste bud ennå, er ethvert bud automatisk høyere
+        }
+        // Sammenlign det nye budet med det høyeste budet
+        // Implementer din egen sammenligningslogikk her basert på spillereglene
+        const nyttBudVerdi = this.parseBudVerdi(bud);
+        const høyesteBudVerdi = this.parseBudVerdi(this.høyesteBud.bud);
+        return nyttBudVerdi > høyesteBudVerdi;
+    }
+    parseBudVerdi(bud) {
+        // Implementer logikk for å konvertere budverdien til et tall for sammenligning
+        // Eksempel: "1♦" => 7, "7NT" => 14, osv.
+        // Dette er en plassholderimplementering
+        return 0;
+    }
+    getBudhistorikk() {
+        return this.budhistorikk;
     }
 }
 exports.BudOgSpørsmål = BudOgSpørsmål;
