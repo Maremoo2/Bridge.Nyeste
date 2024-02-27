@@ -1,50 +1,62 @@
 For å snakke med client:
 npm install express @types/express
 -------------------------------------------------------
-GitHUB commands
-Here's a recap of the steps they should follow after making changes:
-Make Changes: Modify the files as needed.
-Stage Changes: Stage the modified files to be included in the next commit:
+GitHUB-kommandoer
+Her er en oppsummering av trinnene de bør følge etter å ha gjort endringer:
 
+1. Gjør endringer: Endre filene etter behov.
+2. Legg til endringer: Legg til de endrede filene som skal inkluderes i neste commit:
 git add .
-Commit Changes: Commit the staged changes with a descriptive message:
 
+1. Utfør commit: Commit de stagede endringene med en beskrivende melding:
+git commit -m "Beskrivelse av endringer gjort"
 
-git commit -m "Description of changes made"
-Push Changes: Push the committed changes to the remote repository:
-
+1. Push endringer: Push de committede endringene til det fjerne (remote) git-repositoriet:
 git push origin main
----------------------------- POSTMAN COMMANDS-----------------------------------------
-Register Players: Send a POST request to http://localhost:2000/api/register with JSON data in the request body containing the player's name. For example:
+2. Bruk git pull-kommandoen for å trekke ned eventuelle oppdateringer fra GitHub til din lokale kopi av repositoryet. 
 
-json
-Copy code
+---------------------------- POSTMAN COMMANDS-----------------------------------------
+1. Registrer spillere: Send en POST-forespørsel til http://localhost:2000/api/registrer med JSON-data i forespørselens kropp som inneholder spillernavnet. For eksempel::
+
+kopier kode:
 {
     "playerName": "John"
 }
-This will register a player with the name "John".
+Dette vil registrere en spiller med navnet "John" og gi dem en tilfeldig plass (Nord, Sør, Øst, Vest). Den vil også si ifra når det er mer enn 4 spillere som prøver på registrere seg.
 
-Get List of Players: Send a GET request to http://localhost:2000/api/players to retrieve the list of registered players.
+1. Få liste over spillere: Send en GET-forespørsel til http://localhost:2000/api/spillere for å hente listen over registrerte spillere.
 
-Make Bids: Send a POST request to http://localhost:2000/api/bid with JSON data containing the position and bid. For example:
+1. Gi bud: Send en POST-forespørsel til http://localhost:2000/api/bud med JSON-data som inneholder posisjonen og budet. For eksempel:
 
-json
-Copy code
+kopier kode:
 {
-    "position": "North",
+    "position": "nord",
     "bid": "Pass"
 }
 {
-    "position": "north",
+    "position": "øst",
     "bid": "1♠"
 }
 {
-    "position": "south",
+    "position": "sør",
     "bid": "Double"
 }
 
-This will make a bid of "Pass" for the player in the North position.
+GET-forespørselen http://localhost:2000/api/budhistorikk gjør at du får opp budhistorikken.
 
-Deal Cards: Send a GET request to http://localhost:2000/api/deal to deal a hand of cards from the deck.
-GET http://localhost:2000/api/north-hand
+1. Del ut kort: Send en GET-forespørsel til http://localhost:2000/api/del for å dele ut en hånd med kort fra kortstokken.
+GET http://localhost:2000/api/nord-hand
 
+-------------------- MANGLER -----------------------------
+1. Man kan melde litt hva som helst
+2. Danne lag (N,S og W,E)
+
+
+
+---Hva fungerer utmerket---
+1. Registrere spillere
+    - gi de en tilfeldig posisjon
+2. Dele kortstokken
+3. Se hver enkelt hånd til spillere
+4. bud går på rundgang (nord,øst,sør,vest)
+5. Når 3 stykker har POST Pass så kan kommer en melding om "spillet starter nå!"
