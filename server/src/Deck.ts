@@ -1,51 +1,52 @@
-//Deck.ts
-export class Card {
+//Kortstokk.ts
+export class Kort {
     constructor(
-        public suit: string,
-        public rank: number,
-        public name: string
+        public farge: string,
+        public rangering: number,
+        public navn: string
     ) {}
 }
 
-export default class Deck {
-    private cards: Card[];
+export default class Kortstokk {
+    private kort: Kort[];
 
     constructor() {
-        this.cards = [];
-        this.initialize();
+        this.kort = [];
+        this.initialiser();
     }
 
-    private initialize(): void {
-        const suits = ['♥', '♠', '♦', '♣'];
-        const names = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King','Ace'];
-        const values = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,14];
+    private initialiser(): void {
+        const farger = ['♥', '♠', '♦', '♣'];
+        const navn = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Knekt', 'Dame', 'Konge','Ess'];
+        const verdier = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,14];
 
-        // Create the deck of cards
-        for (let i = 0; i < suits.length; i++) {
-            for (let j = 0; j < names.length; j++) {
-                this.cards.push(new Card(suits[i], values[j], names[j]));
+        // Opprett kortstokken
+        for (let i = 0; i < farger.length; i++) {
+            for (let j = 0; j < navn.length; j++) {
+                this.kort.push(new Kort(farger[i], verdier[j], navn[j]));
             }
         }
     }
 
-    shuffle(): void {
-        // Shuffle logic here
-        for (let i = this.cards.length - 1; i > 0; i--) {
+    stokk(): void {
+        // Stokkingslogikk her
+        for (let i = this.kort.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
+            [this.kort[i], this.kort[j]] = [this.kort[j], this.kort[i]];
         }
     }
 
-    deal(): Card[] {
-        // Shuffle the deck before dealing
-        this.shuffle();
+    delUt(): Kort[] {
+        // Stokk kortstokken før utdeling
+        this.stokk();
     
-        // Deal logic here
-        const hand: Card[] = [];
+        // Utdelingslogikk her
+        const hånd: Kort[] = [];
         for (let i = 0; i < 13; i++) {
-            hand.push(this.cards.pop()!);
+            hånd.push(this.kort.pop()!);
         }
-        return hand;
+        return hånd;
     }
     
 }
+

@@ -1,128 +1,127 @@
-//BidAndAsk.ts
-import { Position } from './Players';
+//BudOgSpørsmål.ts
+import { Posisjon } from './Players';
 
-export enum BidType {
+export enum Budtype {
     Pass = 'Pass',
-    Suit = 'Suit',
-    Double = 'Double',
-    Redouble = 'Redouble'
+    Farge = 'Farge',
+    Dobbel = 'Dobbel',
+    Gjentredobbel = 'Gjentredobbel'
 }
 
-export class BidAndAsk {
-    private players: { [key: string]: { position: Position, bid: string } };
-    private turnOrder: Position[];
+export class BudOgSpørsmål {
+    private spillere: { [key: string]: { posisjon: Posisjon, bud: string } };
+    private turRekkefølge: Posisjon[];
 
     constructor() {
-        this.players = {};
-        this.turnOrder = [Position.North, Position.East, Position.South, Position.West];
+        this.spillere = {};
+        this.turRekkefølge = [Posisjon.Nord, Posisjon.Øst, Posisjon.Sør, Posisjon.Vest];
     }
 
-    makeBid(position: Position, bid: string): boolean {
-        // Validate the bid
-        if (!this.isValidBid(position, bid)) {
-            console.log('Hva mener du?:', bid);
+    gjørBud(posisjon: Posisjon, bud: string): boolean {
+        // Valider budet
+        if (!this.erGyldigBud(posisjon, bud)) {
+            console.log('Hva mener du?:', bud);
             return false;
         }
 
-        // Add the bid to the bidding history
-        this.players[position] = { position, bid };
+        // Legg til budet i budhistorikken
+        this.spillere[posisjon] = { posisjon, bud };
 
-        // Handle special bids
-        switch (this.getContractType(bid)) {
-            case BidType.Pass:
-                // Handle pass bid
+        // Behandle spesielle bud
+        switch (this.getKontraktstype(bud)) {
+            case Budtype.Pass:
+                // Håndter pass-budet
                 break;
-            case BidType.Double:
-                // Handle double bid
+            case Budtype.Dobbel:
+                // Håndter dobbelt-budet
                 break;
-            case BidType.Redouble:
-                // Handle redouble bid
+            case Budtype.Gjentredobbel:
+                // Håndter gjentredobbel-budet
                 break;
-            case BidType.Suit:
-                // Handle suit bid
+            case Budtype.Farge:
+                // Håndter farge-budet
                 break;
         }
 
-        // Send updated bidding information to players
-        this.sendBiddingUpdate();
+        // Send oppdatert budinformasjon til spillere
+        this.sendBudOppdatering();
 
         return true;
     }
 
-    sendMelding(position: Position, message: string): boolean {
-        // Implement logic for sending a message/meld
-        // This could include chat functionality or other in-game messages
+    sendMelding(posisjon: Posisjon, melding: string): boolean {
+        // Implementer logikk for å sende en melding
+        // Dette kan inkludere chat-funksjonalitet eller andre meldinger i spillet
         return true;
     }
 
-    getNextBiddingPlayer(): Position | null {
-        const nextPlayer = this.turnOrder.shift();
-        if (nextPlayer) {
-            this.turnOrder.push(nextPlayer);
-            return nextPlayer;
+    hentNesteBudgiver(): Posisjon | null {
+        const nesteSpiller = this.turRekkefølge.shift();
+        if (nesteSpiller) {
+            this.turRekkefølge.push(nesteSpiller);
+            return nesteSpiller;
         }
-        // If all players have bid, return null
+        // Hvis alle spillere har bydd, returner null
         return null;
     }
 
-    private isValidBid(position: Position, bid: string): boolean {
-        // Validate if bid is in correct format
-        if (!bid) {
-            console.log('Invalid bid format');
+    private erGyldigBud(posisjon: Posisjon, bud: string): boolean {
+        // Valider om budet er i riktig format
+        if (!bud) {
+            console.log('Ugyldig budformat');
             return false;
         }
 
-        // Validate if bid follows Bridge rules
-        if (!this.isValidBidFormat(bid)) {
-            console.log('Invalid bid format');
+        // Valider om budet følger Bridgereglene
+        if (!this.erGyldigBudFormat(bud)) {
+            console.log('Ugyldig budformat');
             return false;
         }
 
-        // Additional validation logic based on Bridge bidding rules can be implemented here
+        // Tilleggsvalidering basert på Bridgereglene kan implementeres her
 
-        // Check if bid is valid for the player's position
-        const lastBid = this.getLastBid();
-        if (lastBid && position === lastBid.position) {
-            if (bid === BidType.Pass || bid === BidType.Redouble) {
+        // Sjekk om budet er gyldig for spillerens posisjon
+        const sisteBud = this.sisteBud();
+        if (sisteBud && posisjon === sisteBud.posisjon) {
+            if (bud === Budtype.Pass || bud === Budtype.Gjentredobbel) {
                 return true;
             }
-            console.log('It is not your turn to bid');
+            console.log('Det er ikke din tur til å by');
             return false;
         }
 
         return true;
     }
 
-    private isValidBidFormat(bid: string): boolean {
-        // Validate if bid format follows Bridge rules
-        const suitRegex = /^[1-7][♥♠♦♣]$/; // Regex pattern for suit bids like "1♠"
-        return suitRegex.test(bid) || Object.values(BidType).includes(bid as BidType);
+    private erGyldigBudFormat(bud: string): boolean {
+        // Valider om budformatet følger Bridgereglene
+        const fargeRegex = /^[1-7][♥♠♦♣]$/; // Regex-mønster for fargebud som "1♠"
+        return fargeRegex.test(bud) || Object.values(Budtype).includes(bud as Budtype);
     }
     
 
-    private getLastBid(): { position: Position, bid: string } | undefined {
-        // Get the last bid made by any player
-        const keys = Object.keys(this.players);
-        if (keys.length > 0) {
-            const lastKey = keys[keys.length - 1];
-            return this.players[lastKey];
+    private sisteBud(): { posisjon: Posisjon, bud: string } | undefined {
+        // Hent det siste budet som ble gjort av en hvilken som helst spiller
+        const nøkler = Object.keys(this.spillere);
+        if (nøkler.length > 0) {
+            const sisteNøkkel = nøkler[nøkler.length - 1];
+            return this.spillere[sisteNøkkel];
         }
         return undefined;
     }
 
-    private getContractType(bid: string): BidType {
-        // Determine the type of contract based on the bid
-        // (Pass, Double, Redouble, or Suit)
-        // Implement logic to categorize bids
+    private getKontraktstype(bud: string): Budtype {
+        // Avgjør kontraktstypen basert på budet
+        // (Pass, Dobbel, Gjentredobbel eller Farge)
+        // Implementer logikk for å kategorisere bud
 
-        // This is a placeholder implementation
-        return BidType.Pass;
+        // Dette er en plassholderimplementering
+        return Budtype.Pass;
     }
 
-    private sendBiddingUpdate(): void {
-        // Send updated bidding information to players
-        // This method could notify players of the current bidding status
-        // and any new bids made by opponents
+    private sendBudOppdatering(): void {
+        // Send oppdatert budinformasjon til spillere
+        // Denne metoden kan varsle spillere om den nåværende budstatusen
+        // og eventuelle nye bud gjort av motstanderne
     }
 }
-
