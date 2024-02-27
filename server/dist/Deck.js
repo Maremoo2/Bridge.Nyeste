@@ -1,47 +1,47 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Card = void 0;
-//Deck.ts
-class Card {
-    constructor(suit, rank, name) {
-        this.suit = suit;
-        this.rank = rank;
-        this.name = name;
+exports.Kort = void 0;
+//Kortstokk.ts
+class Kort {
+    constructor(farge, rangering, navn) {
+        this.farge = farge;
+        this.rangering = rangering;
+        this.navn = navn;
     }
 }
-exports.Card = Card;
-class Deck {
+exports.Kort = Kort;
+class Kortstokk {
     constructor() {
-        this.cards = [];
-        this.initialize();
+        this.kort = [];
+        this.initialiser();
     }
-    initialize() {
-        const suits = ['♥', '♠', '♦', '♣'];
-        const names = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'];
-        const values = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-        // Create the deck of cards
-        for (let i = 0; i < suits.length; i++) {
-            for (let j = 0; j < names.length; j++) {
-                this.cards.push(new Card(suits[i], values[j], names[j]));
+    initialiser() {
+        const farger = ['♥', '♠', '♦', '♣'];
+        const navn = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Knekt', 'Dame', 'Konge', 'Ess'];
+        const verdier = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+        // Opprett kortstokken
+        for (let i = 0; i < farger.length; i++) {
+            for (let j = 0; j < navn.length; j++) {
+                this.kort.push(new Kort(farger[i], verdier[j], navn[j]));
             }
         }
     }
-    shuffle() {
-        // Shuffle logic here
-        for (let i = this.cards.length - 1; i > 0; i--) {
+    stokk() {
+        // Stokkingslogikk her
+        for (let i = this.kort.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
+            [this.kort[i], this.kort[j]] = [this.kort[j], this.kort[i]];
         }
     }
-    deal() {
-        // Shuffle the deck before dealing
-        this.shuffle();
-        // Deal logic here
-        const hand = [];
+    delUt() {
+        // Stokk kortstokken før utdeling
+        this.stokk();
+        // Utdelingslogikk her
+        const hånd = [];
         for (let i = 0; i < 13; i++) {
-            hand.push(this.cards.pop());
+            hånd.push(this.kort.pop());
         }
-        return hand;
+        return hånd;
     }
 }
-exports.default = Deck;
+exports.default = Kortstokk;

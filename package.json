@@ -8,7 +8,7 @@
         "dev": "nodemon server/dist/Server.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "author": "Marius",
+    "author": "Marius og Jonas",
     "license": "ISC",
     "dependencies": {
         "express": "^4.18.2",

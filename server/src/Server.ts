@@ -3,7 +3,7 @@ import express, { Express, Request, Response, NextFunction } from 'express';
 import path from 'path';
 import http from 'http';
 import { Posisjon } from './Players';
-import Deck, { Kort } from './Deck'; // Importer Card fra Deck
+import Deck, { Kort } from './Deck'; // Importer kort fra Deck
 import { BudOgSpørsmål, Budtype } from './BidAndAsk';
 
 const app: Express = express();
@@ -75,6 +75,12 @@ app.post('/api/bud', (req: Request, res: Response) => {
   } else {
     return res.status(400).json({ success: false, error: 'Feilet i å gjøre bud' });
   }
+});
+
+// Endpoint for getting the bid history
+app.get('/api/budhistorikk', (req, res) => {
+  const budhistorikk = budOgSpørsmål.getBudhistorikk();
+  res.json(budhistorikk);
 });
 
 // Kortstokk

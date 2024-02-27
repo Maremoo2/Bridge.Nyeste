@@ -4,155 +4,156 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.players = void 0;
+//Server.ts
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const http_1 = __importDefault(require("http"));
 const Players_1 = require("./Players");
-const Deck_1 = __importDefault(require("./Deck")); // Import Card from Deck
+const Deck_1 = __importDefault(require("./Deck")); // Importer Card fra Deck
 const BidAndAsk_1 = require("./BidAndAsk");
 const app = (0, express_1.default)();
 const port = 2000;
 app.use(express_1.default.json());
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
-// Middleware to handle CORS headers
+// Mellomvare for å håndtere CORS-headere
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
-// Serve static files
+// Server statiske filer
 app.use("/", express_1.default.static(path_1.default.join(__dirname, "../../Client/dist")));
-// Players
+// Spillere
 exports.players = [];
-// Endpoint to get the list of players
-app.get('/api/players', (req, res) => {
+// Sluttpunkt for å hente listen over spillere
+app.get('/api/spillere', (req, res) => {
     res.json(exports.players);
 });
-// Endpoint to register players (create a new player)
-app.post('/api/register', (req, res) => {
+// Sluttpunkt for å registrere spillere (opprett en ny spiller)
+app.post('/api/registrer', (req, res) => {
     if (exports.players.length >= 4) {
-        return res.status(400).json({ success: false, error: 'Maximum number of players reached' });
+        return res.status(400).json({ success: false, error: 'Maksimalt antall spillere nådd' });
     }
     const playerName = req.body.playerName;
     if (!playerName) {
-        return res.status(400).json({ success: false, error: 'Player name is required' });
+        return res.status(400).json({ success: false, error: 'Spillernavn er påkrevd' });
     }
-    // Assign position to player
-    const positions = [Players_1.Position.North, Players_1.Position.South, Players_1.Position.East, Players_1.Position.West];
+    // Tildel posisjon til spiller
+    const positions = [Players_1.Posisjon.Nord, Players_1.Posisjon.Sør, Players_1.Posisjon.Øst, Players_1.Posisjon.Vest];
     const availablePositions = positions.filter(pos => !exports.players.some(player => player.position === pos));
     if (availablePositions.length === 0) {
-        return res.status(400).json({ success: false, error: 'All positions are occupied' });
+        return res.status(400).json({ success: false, error: 'Alle posisjoner er opptatt' });
     }
     const randomPosition = availablePositions[Math.floor(Math.random() * availablePositions.length)];
-    // Add player to the list
+    // Legg til spiller i listen
     const newPlayer = { name: playerName, position: randomPosition };
     exports.players.push(newPlayer);
-    return res.json({ success: true, player: newPlayer, message: `${playerName} registered successfully` });
+    return res.json({ success: true, player: newPlayer, message: `${playerName} registrert vellykket` });
 });
-// Bid and Ask
-const bidAndAsk = new BidAndAsk_1.BidAndAsk(); // Create an instance of BidAndAsk
-// Example usage
-app.post('/api/bid', (req, res) => {
+// Bud og Spørsmål
+const budOgSpørsmål = new BidAndAsk_1.BudOgSpørsmål(); // Opprett en instans av BudOgSpørsmål
+// Eksempelbruk
+app.post('/api/bud', (req, res) => {
     const { position, bid } = req.body;
     if (!position || !bid) {
-        return res.status(400).json({ success: false, error: 'Position and bid are required' });
+        return res.status(400).json({ success: false, error: 'Posisjon og bud er påkrevd' });
     }
-    const success = bidAndAsk.makeBid(position, bid);
+    const success = budOgSpørsmål.gjørBud(position, bid);
     if (success) {
-        return res.json({ success: true, message: 'Bid made successfully' });
+        return res.json({ success: true, message: 'Bud utført vellykket' });
     }
     else {
-        return res.status(400).json({ success: false, error: 'Failed to make bid' });
+        return res.status(400).json({ success: false, error: 'Feilet i å gjøre bud' });
     }
 });
-// Deck
-const deck = new Deck_1.default(); // Create an instance of Deck
-let northHand, eastHand, southHand, westHand; // Define hands globally
-let cardsDealt = false; // Variable to track whether cards have been dealt
-app.get('/api/deal', (req, res) => {
-    if (cardsDealt) {
-        return res.status(400).json({ success: false, message: 'Cards are already dealt' });
+// Kortstokk
+const kortstokk = new Deck_1.default(); // Opprett en instans av Deck
+let nordHånd, østHånd, sydHånd, vestHånd; // Definer hender globalt
+let kortDelt = false; // Variabel for å spore om kort er delt
+app.get('/api/del', (req, res) => {
+    if (kortDelt) {
+        return res.status(400).json({ success: false, message: 'Kortene er allerede delt' });
     }
-    // Deal cards to each player
-    northHand = deck.deal();
-    eastHand = deck.deal();
-    southHand = deck.deal();
-    westHand = deck.deal();
-    cardsDealt = true; // Update the variable to indicate that cards have been dealt
-    // Calculate the count of cards in each hand
-    const northHandCount = northHand.length;
-    const eastHandCount = eastHand.length;
-    const southHandCount = southHand.length;
-    const westHandCount = westHand.length;
-    // Return the hands of all players along with the card count
+    // Del kort til hver spiller
+    nordHånd = kortstokk.delUt();
+    østHånd = kortstokk.delUt();
+    sydHånd = kortstokk.delUt();
+    vestHånd = kortstokk.delUt();
+    kortDelt = true; // Oppdater variabelen for å indikere at kort er delt
+    // Beregn antallet kort i hver hånd
+    const nordHåndAntall = nordHånd.length;
+    const østHåndAntall = østHånd.length;
+    const sydHåndAntall = sydHånd.length;
+    const vestHåndAntall = vestHånd.length;
+    // Returner hendene til alle spillere sammen med antall kort
     return res.json({
         success: true,
-        message: 'Cards have been dealt',
-        hands: {
-            north: northHand,
-            east: eastHand,
-            south: southHand,
-            west: westHand
+        message: 'Kortene er delt',
+        hender: {
+            nord: nordHånd,
+            øst: østHånd,
+            syd: sydHånd,
+            vest: vestHånd
         },
-        counts: {
-            north: northHandCount,
-            east: eastHandCount,
-            south: southHandCount,
-            west: westHandCount
+        tellinger: {
+            nord: nordHåndAntall,
+            øst: østHåndAntall,
+            syd: sydHåndAntall,
+            vest: vestHåndAntall
         }
     });
 });
-// Endpoint to view North's hand
-app.get('/api/north-hand', (req, res) => {
-    if (!cardsDealt) {
-        return res.status(400).json({ success: false, error: 'Cards have not been dealt yet' });
+// Sluttpunkt for å se Nordens hånd
+app.get('/api/nord-hand', (req, res) => {
+    if (!kortDelt) {
+        return res.status(400).json({ success: false, error: 'Kortene er ikke delt ennå' });
     }
     res.json({
         success: true,
-        hand: northHand
+        hånd: nordHånd
     });
 });
-// Endpoint to view East's hand
-app.get('/api/east-hand', (req, res) => {
-    if (!cardsDealt) {
-        return res.status(400).json({ success: false, error: 'Cards have not been dealt yet' });
+// Sluttpunkt for å se Østs hånd
+app.get('/api/ost-hand', (req, res) => {
+    if (!kortDelt) {
+        return res.status(400).json({ success: false, error: 'Kortene er ikke delt ennå' });
     }
     res.json({
         success: true,
-        hand: eastHand
+        hånd: østHånd
     });
 });
-// Endpoint to view South's hand
-app.get('/api/south-hand', (req, res) => {
-    if (!cardsDealt) {
-        return res.status(400).json({ success: false, error: 'Cards have not been dealt yet' });
+// Sluttpunkt for å se Sørs hånd
+app.get('/api/syd-hand', (req, res) => {
+    if (!kortDelt) {
+        return res.status(400).json({ success: false, error: 'Kortene er ikke delt ennå' });
     }
     res.json({
         success: true,
-        hand: southHand
+        hånd: sydHånd
     });
 });
-// Endpoint to view West's hand
-app.get('/api/west-hand', (req, res) => {
-    if (!cardsDealt) {
-        return res.status(400).json({ success: false, error: 'Cards have not been dealt yet' });
+// Sluttpunkt for å se Vestens hånd
+app.get('/api/vest-hand', (req, res) => {
+    if (!kortDelt) {
+        return res.status(400).json({ success: false, error: 'Kortene er ikke delt ennå' });
     }
     res.json({
         success: true,
-        hand: westHand
+        hånd: vestHånd
     });
 });
-// Create an HTTP server and attach the Express app
+// Opprett en HTTP-server og fest Express-appen
 const server = http_1.default.createServer(app);
-// Server listening
+// Serverlytting
 server.listen(port, () => {
-    console.log(`Server is listening on http://localhost:${port}`);
+    console.log(`Serveren lytter på http://localhost:${port}`);
 });
-// Handle SIGTERM
+// Behandle SIGTERM
 process.on('SIGTERM', () => {
     server.close(() => {
-        console.log('Server terminated');
+        console.log('Serveren terminert');
     });
 });

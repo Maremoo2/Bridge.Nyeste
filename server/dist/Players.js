@@ -3,59 +3,59 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.players = exports.router = exports.spillere = exports.Position = exports.Suit = void 0;
+exports.spillere = exports.router = exports.spillereMedKort = exports.Posisjon = exports.Farge = void 0;
 //Players.ts
 const express_1 = __importDefault(require("express"));
-// Define Suit enum
-var Suit;
-(function (Suit) {
-    Suit["Hearts"] = "\u2665";
-    Suit["Spades"] = "\u2660";
-    Suit["Diamonds"] = "\u2666";
-    Suit["Clubs"] = "\u2663";
-})(Suit || (exports.Suit = Suit = {}));
-// Define Position enum
-var Position;
-(function (Position) {
-    Position["North"] = "north";
-    Position["East"] = "east";
-    Position["South"] = "south";
-    Position["West"] = "west";
-})(Position || (exports.Position = Position = {}));
+// Definer Suit enum
+var Farge;
+(function (Farge) {
+    Farge["Hjerter"] = "\u2665";
+    Farge["Spar"] = "\u2660";
+    Farge["Ruter"] = "\u2666";
+    Farge["Kl\u00F8ver"] = "\u2663";
+})(Farge || (exports.Farge = Farge = {}));
+// Definer Position enum
+var Posisjon;
+(function (Posisjon) {
+    Posisjon["Nord"] = "nord";
+    Posisjon["\u00D8st"] = "\u00F8st";
+    Posisjon["S\u00F8r"] = "s\u00F8r";
+    Posisjon["Vest"] = "vest";
+})(Posisjon || (exports.Posisjon = Posisjon = {}));
 const router = express_1.default.Router();
 exports.router = router;
-// Define spillere with updated types
-exports.spillere = [
-    { navn: 'North', postkasseId: 1, kort: [] },
-    { navn: 'East', postkasseId: 2, kort: [] },
-    { navn: 'South', postkasseId: 3, kort: [] },
-    { navn: 'West', postkasseId: 4, kort: [] },
+// Definer spillere med oppdaterte typer
+exports.spillereMedKort = [
+    { navn: 'Nord', postkasseId: 1, kort: [] },
+    { navn: 'Øst', postkasseId: 2, kort: [] },
+    { navn: 'Sør', postkasseId: 3, kort: [] },
+    { navn: 'Vest', postkasseId: 4, kort: [] },
 ];
-// Define positions
-const positions = [Position.North, Position.South, Position.East, Position.West];
-// Keep track of assigned positions
-let assignedPositions = [];
-exports.players = [];
-// Endpoint to get the list of players
-router.get('/players', (req, res) => {
-    res.json(exports.players);
+// Definer posisjoner
+const posisjoner = [Posisjon.Nord, Posisjon.Sør, Posisjon.Øst, Posisjon.Vest];
+// Hold styr på tildelte posisjoner
+let tildeltePosisjoner = [];
+exports.spillere = [];
+// Sluttpunkt for å hente listen over spillere
+router.get('/spillere', (req, res) => {
+    res.json(exports.spillere);
 });
-// Endpoint to register players (create a new player)
-router.post('/register', (req, res) => {
-    if (exports.players.length >= 4) {
-        return res.status(400).json({ success: false, error: 'Maximum number of players reached' });
+// Sluttpunkt for å registrere spillere (opprett en ny spiller)
+router.post('/registrer', (req, res) => {
+    if (exports.spillere.length >= 4) {
+        return res.status(400).json({ success: false, error: 'Maksimalt antall spillere nådd' });
     }
-    const playerName = req.body.playerName;
-    if (!playerName) {
-        return res.status(400).json({ success: false, error: 'Player name is required' });
+    const spillernavn = req.body.spillernavn;
+    if (!spillernavn) {
+        return res.status(400).json({ success: false, error: 'Spillernavn er påkrevd' });
     }
-    // Shuffle positions to assign randomly
-    let availablePositions = positions.filter(pos => !assignedPositions.includes(pos));
-    const randomPosition = availablePositions[Math.floor(Math.random() * availablePositions.length)];
-    // Assign position to player
-    const newPlayer = { name: playerName, position: randomPosition };
-    exports.players.push(newPlayer);
-    assignedPositions.push(randomPosition);
-    return res.json({ success: true, player: newPlayer, message: `${playerName} registered successfully` });
+    // Bland posisjoner for å tildele tilfeldig
+    let tilgjengeligePosisjoner = posisjoner.filter(pos => !tildeltePosisjoner.includes(pos));
+    const tilfeldigPosisjon = tilgjengeligePosisjoner[Math.floor(Math.random() * tilgjengeligePosisjoner.length)];
+    // Tildel posisjon til spiller
+    const nySpiller = { navn: spillernavn, posisjon: tilfeldigPosisjon };
+    exports.spillere.push(nySpiller);
+    tildeltePosisjoner.push(tilfeldigPosisjon);
+    return res.json({ success: true, spiller: nySpiller, melding: `${spillernavn} registrert vellykket` });
 });
 exports.default = router;
